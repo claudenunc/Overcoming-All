@@ -1,20 +1,243 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }}</title>
     <link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1>Welcome to the AI Platform</h1>
-        <div class="input-container">
-            <textarea id="prompt" placeholder="Enter your prompt here..."></textarea>
-            <button id="generate-btn">Generate</button>
-        </div>
-        <div class="output-container">
-            <div id="result"></div>
+    <header>
+        <nav>
+            <div class="logo">ARCHITECT</div>
+            <ul class="nav-links">
+                <li><a href="#" id="dashboard-link" class="active">Dashboard</a></li>
+                <li><a href="#" id="agents-link">Agents</a></li>
+                <li><a href="#" id="workflows-link">Workflows</a></li>
+                <li><a href="#" id="projects-link">Projects</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="content-section active">
+            <h1>Welcome to ARCHITECT</h1>
+            <p class="subtitle">The meta-level intelligent system for creating and managing AI agents</p>
+            
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h3>Agents</h3>
+                    <div class="card-content">
+                        <p>Create and manage specialized AI agents for your projects.</p>
+                        <div class="metrics">
+                            <div class="metric">
+                                <span class="value" id="agent-count">0</span>
+                                <span class="label">Agents</span>
+                            </div>
+                        </div>
+                        <button class="btn primary" id="create-agent-btn">Create Agent</button>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>Workflows</h3>
+                    <div class="card-content">
+                        <p>Design and execute workflows between your agents.</p>
+                        <div class="metrics">
+                            <div class="metric">
+                                <span class="value" id="workflow-count">0</span>
+                                <span class="label">Workflows</span>
+                            </div>
+                        </div>
+                        <button class="btn primary" id="create-workflow-btn">Create Workflow</button>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>Projects</h3>
+                    <div class="card-content">
+                        <p>Organize your agents and workflows into projects.</p>
+                        <div class="metrics">
+                            <div class="metric">
+                                <span class="value" id="project-count">0</span>
+                                <span class="label">Projects</span>
+                            </div>
+                        </div>
+                        <button class="btn primary" id="create-project-btn">Create Project</button>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>Quick Start</h3>
+                    <div class="card-content">
+                        <p>Get started with ARCHITECT by creating your first agent.</p>
+                        <ol class="steps">
+                            <li>Create a specialized agent</li>
+                            <li>Define its capabilities and domain</li>
+                            <li>Design workflows between agents</li>
+                            <li>Organize into projects</li>
+                        </ol>
+                        <button class="btn secondary" id="quick-start-btn">Learn More</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Agents Section -->
+        <section id="agents" class="content-section">
+            <h1>Manage Agents</h1>
+            <p class="subtitle">Create and manage specialized AI agents</p>
+            
+            <div class="actions">
+                <button class="btn primary" id="new-agent-btn">New Agent</button>
+            </div>
+            
+            <div class="list-container">
+                <div class="list-header">
+                    <div class="col">Name</div>
+                    <div class="col">Domain</div>
+                    <div class="col">Capabilities</div>
+                    <div class="col">Actions</div>
+                </div>
+                <div id="agent-list" class="list-body">
+                    <p class="empty-message">No agents found. Create your first agent to get started.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Workflows Section -->
+        <section id="workflows" class="content-section">
+            <h1>Manage Workflows</h1>
+            <p class="subtitle">Design and execute workflows between agents</p>
+            
+            <div class="actions">
+                <button class="btn primary" id="new-workflow-btn">New Workflow</button>
+            </div>
+            
+            <div class="list-container">
+                <div class="list-header">
+                    <div class="col">Name</div>
+                    <div class="col">Description</div>
+                    <div class="col">Steps</div>
+                    <div class="col">Actions</div>
+                </div>
+                <div id="workflow-list" class="list-body">
+                    <p class="empty-message">No workflows found. Create your first workflow to get started.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="content-section">
+            <h1>Manage Projects</h1>
+            <p class="subtitle">Organize your agents and workflows into projects</p>
+            
+            <div class="actions">
+                <button class="btn primary" id="new-project-btn">New Project</button>
+            </div>
+            
+            <div class="list-container">
+                <div class="list-header">
+                    <div class="col">Name</div>
+                    <div class="col">Description</div>
+                    <div class="col">Agents</div>
+                    <div class="col">Actions</div>
+                </div>
+                <div id="project-list" class="list-body">
+                    <p class="empty-message">No projects found. Create your first project to get started.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal for creating new agents -->
+    <div id="agent-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Create New Agent</h2>
+            <form id="agent-form">
+                <div class="form-group">
+                    <label for="agent-name">Name:</label>
+                    <input type="text" id="agent-name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="agent-description">Description:</label>
+                    <textarea id="agent-description" name="description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="agent-domain">Domain:</label>
+                    <input type="text" id="agent-domain" name="domain" required>
+                </div>
+                <div class="form-group">
+                    <label for="agent-capabilities">Capabilities (comma-separated):</label>
+                    <input type="text" id="agent-capabilities" name="capabilities">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn primary">Create Agent</button>
+                    <button type="button" class="btn secondary cancel-btn">Cancel</button>
+                </div>
+            </form>
         </div>
     </div>
+
+    <!-- Modal for creating new workflows -->
+    <div id="workflow-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Create New Workflow</h2>
+            <form id="workflow-form">
+                <div class="form-group">
+                    <label for="workflow-name">Name:</label>
+                    <input type="text" id="workflow-name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="workflow-description">Description:</label>
+                    <textarea id="workflow-description" name="description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="workflow-steps">Steps (JSON format):</label>
+                    <textarea id="workflow-steps" name="steps" rows="5" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="workflow-input-schema">Input Schema (JSON format):</label>
+                    <textarea id="workflow-input-schema" name="input_schema" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="workflow-output-schema">Output Schema (JSON format):</label>
+                    <textarea id="workflow-output-schema" name="output_schema" rows="3" required></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn primary">Create Workflow</button>
+                    <button type="button" class="btn secondary cancel-btn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for creating new projects -->
+    <div id="project-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Create New Project</h2>
+            <form id="project-form">
+                <div class="form-group">
+                    <label for="project-name">Name:</label>
+                    <input type="text" id="project-name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="project-description">Description:</label>
+                    <textarea id="project-description" name="description" required></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn primary">Create Project</button>
+                    <button type="button" class="btn secondary cancel-btn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="{{ url_for('static', path='/js/main.js') }}"></script>
 </body>
 </html>
