@@ -180,14 +180,20 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             
             const formData = new FormData(this);
+            const capabilities = formData.get('capabilities') ? 
+                formData.get('capabilities').split(',').map(cap => cap.trim()) : [];
+                
             const agentData = {
                 name: formData.get('name'),
                 description: formData.get('description'),
                 domain: formData.get('domain'),
-                capabilities: formData.get('capabilities') ? formData.get('capabilities').split(',').map(cap => cap.trim()) : []
+                capabilities: capabilities,
+                personality: {},
+                knowledge_base: []
             };
             
             try {
+                console.log('Creating agent with data:', agentData);
                 const newAgent = await agentManager.create(agentData);
                 modals.agent.modal.style.display = 'none';
                 alert('Agent created successfully!');
@@ -196,6 +202,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateDashboardCounts();
             } catch (error) {
                 console.error('Error creating agent:', error);
+                alert('Error creating agent: ' + error.message);
             }
         });
     }

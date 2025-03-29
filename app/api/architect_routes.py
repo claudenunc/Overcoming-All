@@ -13,23 +13,26 @@ router = APIRouter(prefix="/architect", tags=["architect"])
 
 # ------ Agent Routes ------
 
+from pydantic import BaseModel
+
+class AgentCreateRequest(BaseModel):
+    name: str
+    description: str
+    domain: str
+    capabilities: List[str] = []
+    personality: Dict[str, Any] = {}
+    knowledge_base: List[str] = []
+
 @router.post("/agents", response_model=Agent)
-async def create_agent(
-    name: str,
-    description: str,
-    domain: str,
-    capabilities: List[str] = None,
-    personality: Dict[str, Any] = None,
-    knowledge_base: List[str] = None
-):
+async def create_agent(agent_data: AgentCreateRequest):
     """Create a new agent"""
     agent = agent_manager.create_agent(
-        name=name, 
-        description=description, 
-        domain=domain,
-        capabilities=capabilities,
-        personality=personality,
-        knowledge_base=knowledge_base
+        name=agent_data.name, 
+        description=agent_data.description, 
+        domain=agent_data.domain,
+        capabilities=agent_data.capabilities,
+        personality=agent_data.personality,
+        knowledge_base=agent_data.knowledge_base
     )
     return agent
 
@@ -98,21 +101,22 @@ async def get_agent_tasks(agent_id: str):
 
 # ------ Workflow Routes ------
 
-@router.post("/workflows", response_model=Workflow)
-async def create_workflow(
-    name: str,
-    description: str,
-    steps: List[Dict[str, Any]],
-    input_schema: Dict[str, Any],
+class WorkflowCreateRequest(BaseModel):
+    name: str
+    description: str
+    steps: List[Dict[str, Any]]
+    input_schema: Dict[str, Any]
     output_schema: Dict[str, Any]
-):
+
+@router.post("/workflows", response_model=Workflow)
+async def create_workflow(workflow_data: WorkflowCreateRequest):
     """Create a new workflow"""
     workflow = workflow_manager.create_workflow(
-        name=name,
-        description=description,
-        steps=steps,
-        input_schema=input_schema,
-        output_schema=output_schema
+        name=workflow_data.name,
+        description=workflow_data.description,
+        steps=workflow_data.steps,
+        input_schema=workflow_data.input_schema,
+        output_schema=workflow_data.output_schema
     )
     return workflow
 
@@ -158,10 +162,19 @@ async def execute_workflow(workflow_id: str, input_data: Dict[str, Any]):
 
 # ------ Project Routes ------
 
+class ProjectCreateRequest(BaseModel):
+    name: str
+    description: str
+    metadata: Dict[str, Any] = {}
+
 @router.post("/projects", response_model=Project)
-async def create_project(name: str, description: str, metadata: Dict[str, Any] = None):
+async def create_project(project_data: ProjectCreateRequest):
     """Create a new project"""
-    project = workflow_manager.create_project(name, description, metadata)
+    project = workflow_manager.create_project(
+        name=project_data.name, 
+        description=project_data.description, 
+        metadata=project_data.metadata
+    )
     return project
 
 @router.get("/projects", response_model=List[Project])
