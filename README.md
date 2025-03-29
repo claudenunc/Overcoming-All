@@ -1,12 +1,14 @@
-# AI Platform
+# AI Platform: ARCHITECT
 
-A web-based platform for interacting with AI models, built with FastAPI and Transformers.
+A meta-level intelligent system designed to create, manage, and coordinate specialized AI agents for any project or business need, built with FastAPI and Transformers.
 
 ## Features
 
-- Web interface for text generation
+- Create customized agent teams for specific tasks and projects
+- Orchestrate workflows between multiple specialized agents
+- Monitor performance and continuously improve agent capabilities
+- Web interface for interacting with your AI agent ecosystem
 - API endpoints for integration with other applications
-- Extensible architecture for adding new AI models
 
 ## Setup
 
