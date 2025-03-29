@@ -164,6 +164,11 @@ async def create_project(name: str, description: str, metadata: Dict[str, Any] =
     project = workflow_manager.create_project(name, description, metadata)
     return project
 
+@router.get("/projects", response_model=List[Project])
+async def list_projects():
+    """List all available projects"""
+    return list(workflow_manager.projects.values())
+
 @router.get("/projects/{project_id}", response_model=Project)
 async def get_project(project_id: str):
     """Get a specific project by ID"""
