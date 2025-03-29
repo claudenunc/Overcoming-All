@@ -215,15 +215,53 @@ document.addEventListener('DOMContentLoaded', function() {
             let workflowData;
             
             try {
+                // Provide default JSON if inputs are empty or invalid
+                let steps = [];
+                let inputSchema = {};
+                let outputSchema = {};
+                
+                try {
+                    if (formData.get('steps') && formData.get('steps').trim()) {
+                        steps = JSON.parse(formData.get('steps'));
+                    }
+                } catch (jsonError) {
+                    console.error('Error parsing steps JSON:', jsonError);
+                    steps = [
+                        { "type": "start", "next": "end" },
+                        { "type": "end" }
+                    ];
+                }
+                
+                try {
+                    if (formData.get('input_schema') && formData.get('input_schema').trim()) {
+                        inputSchema = JSON.parse(formData.get('input_schema'));
+                    }
+                } catch (jsonError) {
+                    console.error('Error parsing input schema JSON:', jsonError);
+                    inputSchema = { "type": "object", "properties": {} };
+                }
+                
+                try {
+                    if (formData.get('output_schema') && formData.get('output_schema').trim()) {
+                        outputSchema = JSON.parse(formData.get('output_schema'));
+                    }
+                } catch (jsonError) {
+                    console.error('Error parsing output schema JSON:', jsonError);
+                    outputSchema = { "type": "object", "properties": {} };
+                }
+                
                 workflowData = {
                     name: formData.get('name'),
                     description: formData.get('description'),
-                    steps: JSON.parse(formData.get('steps')),
-                    input_schema: JSON.parse(formData.get('input_schema')),
-                    output_schema: JSON.parse(formData.get('output_schema'))
+                    steps: steps,
+                    input_schema: inputSchema,
+                    output_schema: outputSchema
                 };
+                
+                console.log('Creating workflow with data:', workflowData);
             } catch (error) {
-                alert('Error parsing JSON. Please check your input format.');
+                console.error('Error preparing workflow data:', error);
+                alert('Error preparing workflow data: ' + error.message);
                 return;
             }
             
@@ -236,6 +274,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateDashboardCounts();
             } catch (error) {
                 console.error('Error creating workflow:', error);
+                alert('Error creating workflow: ' + error.message);
             }
         });
     }
@@ -247,10 +286,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const formData = new FormData(this);
             const projectData = {
                 name: formData.get('name'),
-                description: formData.get('description')
+                description: formData.get('description'),
+                metadata: {}
             };
             
             try {
+                console.log('Creating project with data:', projectData);
                 const newProject = await projectManager.create(projectData);
                 modals.project.modal.style.display = 'none';
                 alert('Project created successfully!');
@@ -259,6 +300,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateDashboardCounts();
             } catch (error) {
                 console.error('Error creating project:', error);
+                alert('Error creating project: ' + error.message);
             }
         });
     }

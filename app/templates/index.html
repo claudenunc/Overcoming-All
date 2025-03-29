@@ -198,15 +198,32 @@
                 </div>
                 <div class="form-group">
                     <label for="workflow-steps">Steps (JSON format):</label>
-                    <textarea id="workflow-steps" name="steps" rows="5" required></textarea>
+                    <textarea id="workflow-steps" name="steps" rows="5" placeholder='[
+  {"id": "start", "type": "start", "next": "task1"},
+  {"id": "task1", "type": "agent_task", "agent_id": "agent1", "next": "end"},
+  {"id": "end", "type": "end"}
+]'></textarea>
+                    <div class="input-help">Leave blank to use a simple default workflow.</div>
                 </div>
                 <div class="form-group">
                     <label for="workflow-input-schema">Input Schema (JSON format):</label>
-                    <textarea id="workflow-input-schema" name="input_schema" rows="3" required></textarea>
+                    <textarea id="workflow-input-schema" name="input_schema" rows="3" placeholder='{
+  "type": "object",
+  "properties": {
+    "input_text": {"type": "string"}
+  }
+}'></textarea>
+                    <div class="input-help">Leave blank to use a simple default schema.</div>
                 </div>
                 <div class="form-group">
                     <label for="workflow-output-schema">Output Schema (JSON format):</label>
-                    <textarea id="workflow-output-schema" name="output_schema" rows="3" required></textarea>
+                    <textarea id="workflow-output-schema" name="output_schema" rows="3" placeholder='{
+  "type": "object",
+  "properties": {
+    "output_text": {"type": "string"}
+  }
+}'></textarea>
+                    <div class="input-help">Leave blank to use a simple default schema.</div>
                 </div>
                 <div class="form-actions">
                     <button type="submit" class="btn primary">Create Workflow</button>
